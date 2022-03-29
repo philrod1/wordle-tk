@@ -4,17 +4,15 @@ from words import Words
 
 class GameArea:
 
-    def __init__(self, tk: tkinter, window):
+    def __init__(self, tk: tkinter, words: list):
         self.tk = tk
-        self.view = tk.PanedWindow(orient=tk.HORIZONTAL)
-        self.grid = Grid(tk)
-        self.words = Words(tk, window)
+        self.words = words
+        self.view = tk.PanedWindow(orient=tk.HORIZONTAL, bd=1, bg='black')
+        self.words_panel = Words(tk)
+        self.words_panel.set_words(words)
+        self.grid = Grid(tk, self)
         self.view.add(self.grid.get_view())
-        self.view.add(self.words.get_view())
-        self.grid.get_view().grid(column=0, row=0)
-        self.words.get_view().grid(column=1, row=0)
-        # self.grid.get_view().pack(side=tk.LEFT)
-        # self.words.get_view().pack(side=tk.RIGHT)
+        self.view.add(self.words_panel.get_view())
 
     
     def get_view(self):
@@ -23,7 +21,8 @@ class GameArea:
 
     def set_word(self, word: str):
         self.grid.set_word(word)
+        print(str(self) + " " + word)
     
 
-    def set_words(self, words: list):
-        self.words.set_words(words)
+    def update_words(self):
+        self.words_panel.set_words(self.grid.get_matches(self.words))
